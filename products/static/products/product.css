@@ -53,7 +53,7 @@ header svg:hover {
   width: 100%;
   column-gap: 40px;
 }
-#product-main-con button {
+#product-main-con main button {
   background-color: #5762d5;
   font-size: 20px;
   color: white;

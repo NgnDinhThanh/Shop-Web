@@ -22,6 +22,49 @@
         </main>
         <section id="feedback">
             <h3>Customer's feedbacks:</h3>
+            {% if messages %}
+                {% for message in messages %}
+                    <p style="color: green;">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <form method="POST">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    {{ field.label_tag }}<br>
+                    {{ field }}<br>
+
+                    {% if field.help_text %}
+                        <p>{{ field.help_text }}</p>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <p style="color: red;">{{ error }}</p><br>
+                    {% endfor %}
+                    <br>
+                {% endfor %}
+
+                <button type="submit">Submit</button>
+            </form>
+            <p>
+                {% if result %}
+                    Your name was registered successfully!
+                {% endif %}
+            </p>
+        </section>
+        <section>
+            {% for review in reviews %}
+                <h4>{{review.name}} - {{review.rating}} 
+                    {% if review.rating == 5 %}⭐⭐⭐⭐⭐
+                    {% elif review.rating == 4 %}⭐⭐⭐⭐
+                    {% elif review.rating == 3 %}⭐⭐⭐
+                    {% elif review.rating == 2 %}⭐⭐
+                    {% else %}⭐
+                    {% endif %}
+                </h4>
+                <p>{{review.text}}</p>
+                <br>
+            {% endfor %}
         </section>
     </div>
 
