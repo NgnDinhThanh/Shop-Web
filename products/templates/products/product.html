@@ -31,8 +31,8 @@
                 {% csrf_token %}
 
                 {% for field in form %}
-                    {{ field.label_tag }}<br>
-                    {{ field }}<br>
+                    {{ field.label_tag }}
+                    {{ field }}
 
                     {% if field.help_text %}
                         <p>{{ field.help_text }}</p>
@@ -41,7 +41,6 @@
                     {% for error in field.errors %}
                         <p style="color: red;">{{ error }}</p><br>
                     {% endfor %}
-                    <br>
                 {% endfor %}
 
                 <button type="submit">Submit</button>

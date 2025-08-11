@@ -2,19 +2,24 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Product, Feedback
 from django.contrib import messages
+from django.views import View
 
 from .forms import FeedbackForm
 # Create your views here.
 
-def index(request):
-    user = "pouya"
-    products_numbs = 7
-    products = Product.objects.all().order_by('id')[:4]
-    return render(request, 'products/home.html', {
-        "name": user,
-        "products_numbs": products_numbs,
-        "products": products,
-    })
+class IndexView(View):
+    def get(self, request):
+        user = "pouya"
+        products_numbs = 7
+        products = Product.objects.all().order_by('id')[:4]
+        return render(request, 'products/home.html', {
+            "name": user,
+            "products_numbs": products_numbs,
+            "products": products,
+        })
+    def post(self, request):
+        pass
+    
     
 def signup(request):
     return render(request, 'products/signup.html')
@@ -25,32 +30,30 @@ def product_cat(request, product):
     else:
         return HttpResponse("The page you are looking for doesn't exist.")
     
-def product_page(request, product_brand, product_slug):
-    product = Product.objects.get(slug = product_slug)
-    form = FeedbackForm()
-    reviews = Feedback.objects.filter(product = product)
-    if request.method == "GET":
-        
+class ProductPageView(View):
+    def get(self, request, product_brand, product_slug):
+        product = Product.objects.get(slug = product_slug)
+        my_feedback = Feedback.objects.get(product = product, id = 1)
+        form = FeedbackForm(instance=my_feedback)
+        reviews = Feedback.objects.filter(product = product)
         return render(request, "products/product.html", {
             "product": product,
             "form": form,
             "reviews": reviews
         })
-        
-    else:
-        form = FeedbackForm(request.POST)
+
+    def post(self, request, product_brand, product_slug):
+        product = Product.objects.get(slug = product_slug)
+        my_feedback = Feedback.objects.get(product = product, id = 1)
+        form = FeedbackForm(request.POST, instance=my_feedback)
+        reviews = Feedback.objects.filter(product = product)
         if form.is_valid():
-            feedback = Feedback(
-                name = form.cleaned_data["name"],
-                rating = form.cleaned_data["rating"],
-                product = product,
-                text = form.cleaned_data["text"]
-            )
-            feedback.save()
+            form.save()
             messages.success(request, "Your feedback was submitted successfully!")
-            
+        
         return render(request, "products/product.html", {
             "product": product,
             "form": form,
             "reviews": reviews
         })
+    
