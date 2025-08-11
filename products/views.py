@@ -23,4 +23,7 @@ def product_cat(request, product):
         return HttpResponse("The page you are looking for doesn't exist.")
     
 def product_page(request, product_brand, product_slug):
-    return render(request, "products/product.html")
+    product = Product.objects.get(slug = product_slug)
+    return render(request, "products/product.html", {
+        "product": product
+    })
